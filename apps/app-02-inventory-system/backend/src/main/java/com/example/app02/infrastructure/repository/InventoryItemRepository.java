@@ -1,0 +1,1 @@
+package com.example.app02.infrastructure.repository; import com.example.app02.domain.entity.InventoryItem; import org.springframework.data.jpa.repository.JpaRepository; public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long> {}

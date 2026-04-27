@@ -1,0 +1,1 @@
+package com.example.app03.application.mapper; import com.example.app03.application.dto.LeadDto; import com.example.app03.domain.entity.Lead; public class LeadMapper { public static LeadDto toDto(Lead e) { return new LeadDto(e.getId(),e.getName(),e.getStatus()); } }

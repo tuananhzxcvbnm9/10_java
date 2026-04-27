@@ -1,0 +1,1 @@
+package com.example.app06.infrastructure.repository; import com.example.app06.domain.entity.Course; import org.springframework.data.jpa.repository.JpaRepository; public interface CourseRepository extends JpaRepository<Course, Long> {}

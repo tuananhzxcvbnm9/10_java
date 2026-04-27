@@ -1,0 +1,299 @@
+version: "3.9"
+services:
+  reverse-proxy:
+    image: nginx:1.27-alpine
+    ports: ["80:80"]
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks: [app-network]
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [app-network]
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+    networks: [app-network]
+
+  prometheus:
+    image: prom/prometheus:v2.53.1
+    ports: ["9090:9090"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks: [app-network]
+
+  grafana:
+    image: grafana/grafana:11.1.4
+    ports: ["3000:3000"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infrastructure/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks: [app-network]
+
+  app-01-backend:
+    build: ./apps/app-01-task-manager/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app01_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-01-frontend:
+    build: ./apps/app-01-task-manager/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-02-backend:
+    build: ./apps/app-02-inventory-system/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app02_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-02-frontend:
+    build: ./apps/app-02-inventory-system/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-03-backend:
+    build: ./apps/app-03-crm-system/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app03_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-03-frontend:
+    build: ./apps/app-03-crm-system/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-04-backend:
+    build: ./apps/app-04-booking-system/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app04_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-04-frontend:
+    build: ./apps/app-04-booking-system/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-05-backend:
+    build: ./apps/app-05-ecommerce-admin/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app05_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-05-frontend:
+    build: ./apps/app-05-ecommerce-admin/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-06-backend:
+    build: ./apps/app-06-learning-management/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app06_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-06-frontend:
+    build: ./apps/app-06-learning-management/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-07-backend:
+    build: ./apps/app-07-expense-tracker/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app07_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-07-frontend:
+    build: ./apps/app-07-expense-tracker/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-08-backend:
+    build: ./apps/app-08-helpdesk-ticketing/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app08_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-08-frontend:
+    build: ./apps/app-08-helpdesk-ticketing/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-09-backend:
+    build: ./apps/app-09-blog-cms/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app09_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-09-frontend:
+    build: ./apps/app-09-blog-cms/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+  app-10-backend:
+    build: ./apps/app-10-analytics-dashboard/backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: app10_db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+    networks: [app-network]
+
+  app-10-frontend:
+    build: ./apps/app-10-analytics-dashboard/frontend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+    networks: [app-network]
+
+
+networks:
+  app-network:
+volumes:
+  pgdata:
+  grafana-data:

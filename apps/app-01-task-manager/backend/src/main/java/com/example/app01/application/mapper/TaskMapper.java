@@ -1,0 +1,1 @@
+package com.example.app01.application.mapper; import com.example.app01.application.dto.TaskDto; import com.example.app01.domain.entity.Task; public class TaskMapper { public static TaskDto toDto(Task e) { return new TaskDto(e.getId(),e.getName(),e.getStatus()); } }

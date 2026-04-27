@@ -1,0 +1,1 @@
+package com.example.app07.application.mapper; import com.example.app07.application.dto.ExpenseDto; import com.example.app07.domain.entity.Expense; public class ExpenseMapper { public static ExpenseDto toDto(Expense e) { return new ExpenseDto(e.getId(),e.getName(),e.getStatus()); } }
