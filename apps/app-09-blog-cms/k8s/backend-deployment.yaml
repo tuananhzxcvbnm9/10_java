@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-09-backend
+  namespace: java-10-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-09-backend
+  template:
+    metadata:
+      labels:
+        app: app-09-backend
+    spec:
+      containers:
+        - name: backend
+          image: app-09-backend:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: app-09-config
+            - secretRef:
+                name: app-09-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10

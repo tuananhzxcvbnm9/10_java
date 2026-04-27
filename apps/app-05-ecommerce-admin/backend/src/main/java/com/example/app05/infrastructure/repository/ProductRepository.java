@@ -1,0 +1,1 @@
+package com.example.app05.infrastructure.repository; import com.example.app05.domain.entity.Product; import org.springframework.data.jpa.repository.JpaRepository; public interface ProductRepository extends JpaRepository<Product, Long> {}

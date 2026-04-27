@@ -1,0 +1,1 @@
+package com.example.app06.application.mapper; import com.example.app06.application.dto.CourseDto; import com.example.app06.domain.entity.Course; public class CourseMapper { public static CourseDto toDto(Course e) { return new CourseDto(e.getId(),e.getName(),e.getStatus()); } }

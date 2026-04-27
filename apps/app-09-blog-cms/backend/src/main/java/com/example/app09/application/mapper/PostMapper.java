@@ -1,0 +1,1 @@
+package com.example.app09.application.mapper; import com.example.app09.application.dto.PostDto; import com.example.app09.domain.entity.Post; public class PostMapper { public static PostDto toDto(Post e) { return new PostDto(e.getId(),e.getName(),e.getStatus()); } }

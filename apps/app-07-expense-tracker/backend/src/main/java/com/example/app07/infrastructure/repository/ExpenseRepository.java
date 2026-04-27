@@ -1,0 +1,1 @@
+package com.example.app07.infrastructure.repository; import com.example.app07.domain.entity.Expense; import org.springframework.data.jpa.repository.JpaRepository; public interface ExpenseRepository extends JpaRepository<Expense, Long> {}

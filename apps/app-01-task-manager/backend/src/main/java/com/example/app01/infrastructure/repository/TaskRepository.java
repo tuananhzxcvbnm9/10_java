@@ -1,0 +1,1 @@
+package com.example.app01.infrastructure.repository; import com.example.app01.domain.entity.Task; import org.springframework.data.jpa.repository.JpaRepository; public interface TaskRepository extends JpaRepository<Task, Long> {}

@@ -1,0 +1,1 @@
+package com.example.app10.infrastructure.repository; import com.example.app10.domain.entity.Metric; import org.springframework.data.jpa.repository.JpaRepository; public interface MetricRepository extends JpaRepository<Metric, Long> {}

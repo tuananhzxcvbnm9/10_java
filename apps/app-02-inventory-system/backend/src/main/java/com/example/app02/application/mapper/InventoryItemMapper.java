@@ -1,0 +1,1 @@
+package com.example.app02.application.mapper; import com.example.app02.application.dto.InventoryItemDto; import com.example.app02.domain.entity.InventoryItem; public class InventoryItemMapper { public static InventoryItemDto toDto(InventoryItem e) { return new InventoryItemDto(e.getId(),e.getName(),e.getStatus()); } }

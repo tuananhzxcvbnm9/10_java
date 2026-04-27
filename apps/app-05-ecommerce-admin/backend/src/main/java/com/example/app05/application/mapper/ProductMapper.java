@@ -1,0 +1,1 @@
+package com.example.app05.application.mapper; import com.example.app05.application.dto.ProductDto; import com.example.app05.domain.entity.Product; public class ProductMapper { public static ProductDto toDto(Product e) { return new ProductDto(e.getId(),e.getName(),e.getStatus()); } }

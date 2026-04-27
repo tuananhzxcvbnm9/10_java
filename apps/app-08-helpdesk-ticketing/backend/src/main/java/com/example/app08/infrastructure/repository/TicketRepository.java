@@ -1,0 +1,1 @@
+package com.example.app08.infrastructure.repository; import com.example.app08.domain.entity.Ticket; import org.springframework.data.jpa.repository.JpaRepository; public interface TicketRepository extends JpaRepository<Ticket, Long> {}

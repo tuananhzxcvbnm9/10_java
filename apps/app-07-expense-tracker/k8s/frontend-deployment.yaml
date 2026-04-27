@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-07-frontend
+  namespace: java-10-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-07-frontend
+  template:
+    metadata:
+      labels:
+        app: app-07-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: app-07-frontend:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

@@ -1,0 +1,1 @@
+package com.example.app04.application.mapper; import com.example.app04.application.dto.BookingDto; import com.example.app04.domain.entity.Booking; public class BookingMapper { public static BookingDto toDto(Booking e) { return new BookingDto(e.getId(),e.getName(),e.getStatus()); } }

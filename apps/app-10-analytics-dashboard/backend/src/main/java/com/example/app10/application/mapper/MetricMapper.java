@@ -1,0 +1,1 @@
+package com.example.app10.application.mapper; import com.example.app10.application.dto.MetricDto; import com.example.app10.domain.entity.Metric; public class MetricMapper { public static MetricDto toDto(Metric e) { return new MetricDto(e.getId(),e.getName(),e.getStatus()); } }

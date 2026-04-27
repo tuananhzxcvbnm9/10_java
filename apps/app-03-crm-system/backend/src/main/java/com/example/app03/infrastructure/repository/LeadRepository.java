@@ -1,0 +1,1 @@
+package com.example.app03.infrastructure.repository; import com.example.app03.domain.entity.Lead; import org.springframework.data.jpa.repository.JpaRepository; public interface LeadRepository extends JpaRepository<Lead, Long> {}
