@@ -1,7 +1,4 @@
 apiVersion: v1
-kind: ConfigMap
+kind: Namespace
 metadata:
-  name: shared-namespace
-  namespace: java-10-apps
-data:
-  note: placeholder
+  name: java-10-apps
